@@ -57,15 +57,18 @@ console.log(shuffledItem)
 
 
 shuffledItem.map((items, index) => {
-  div.innerHTML += `<div id="items">
-<img src="${items.imageUrl}" alt="${items.brand} ${items.model}" width="150" height="150">
-    <h3>Brand : $${items.name} </h3>
-    <h3>Price : $${items.price} </h3>
-    <button onclick = "addToCart(${index})" class="btn">Add To cart</button>`
+  div.innerHTML += `
+    <div id="items">
+      <img src="${items.imageUrl}" alt="${items.brand} ${items.name}">
+      <hr />
+      <h3 style="color: #4f46e5; font-weight: 600;">${items.name}</h3>
+      <p>Brand: ${items.brand}</p>
+      <p style="color: red; font-weight: bold;">$${items.price}</p>
+      <button onclick="addToCart(${index})" class="btn">Add to Cart</button>
+    </div>
+  `;
+});
 
-
-
-})
 
 
 // Add to cart scene part2
