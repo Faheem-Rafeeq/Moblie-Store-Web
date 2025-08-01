@@ -11,6 +11,7 @@ function renderItems() {
   data.forEach((item, index) => {
       div.innerHTML += `
           <div class="item" id="item-${index}">
+          <img src="${item.imageUrl}" alt="${item.name}">
               <h3>Brand: ${item.name}</h3>
               <h3>Price: $${item.price}</h3>
               <button onclick="decrease(${index})" class="btn3"> - </button> 
