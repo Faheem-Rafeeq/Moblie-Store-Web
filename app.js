@@ -1,4 +1,3 @@
-const div = document.querySelector(`.main-items`);
 
 
 const phones = [
@@ -30,84 +29,72 @@ const phones = [
 ];
 
 
+const div = document.querySelector('.main-items');
+const input = document.getElementById("inputfield");
+const searchbtn = document.getElementById("searchbtn");
 
 
-// step 2 add logic to shuffle this array of objcts]
+// Initial render
+renderItems(phones);
 
-
-function shuffleArray(arr) {
-  let shuffled = [...arr]
-
-  for (i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
-
-
-  }
-
-  return shuffled
-}
-
-const shuffledItem = shuffleArray(phones);
-console.log(shuffledItem)
-
-
-// Items Rendering part
-
-
-shuffledItem.map((items, index) => {
-  div.innerHTML += `
-    <div id="items">
-      <img src="${items.imageUrl}" alt="${items.brand} ${items.name}">
-      <hr />
-      <h3 style="color: #4f46e5; font-weight: 600;">${items.name}</h3>
-      <p>Brand: ${items.brand}</p>
-      <p style="color: red; font-weight: bold;">$${items.price}</p>
-      <button onclick="addToCart(${index})" class="btn">Add to Cart</button>
-    </div>
-  `;
+// Prevent form submission
+document.querySelector('form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  handleSearch();
 });
 
+searchbtn.addEventListener("click", handleSearch);
 
-
-// Add to cart scene part2
-
-let cartItems = []
-
-function addToCart(index) {
-  let indexNumber = cartItems.indexOf(phones[index]);
-  if (indexNumber !== -1) {
-
-    cartItems[indexNumber].quantity += 1;
-
-    console.log(cartItems)
-
-  } else {
-    phones[index].quantity = 1
-    cartItems.push(phones[index])
-    console.log(cartItems)
-
-  }
-
-
-  Swal.fire({
-    title: "Great !",
-    text: "Item added to cart successfully!",
-    icon: "success",
-  });
-
+function handleSearch() {
+  const searchedValue = input.value.trim().toLowerCase();
+  const filteredPhones = searchedValue === "" 
+    ? phones 
+    : phones.filter(phone => 
+        phone.name.toLowerCase().includes(searchedValue) ||
+        phone.brand.toLowerCase().includes(searchedValue)
+      );
+  renderItems(filteredPhones);
 }
 
+// Rendering Items
+function renderItems(items) {
+  div.innerHTML = items.length === 0 
+    ? "<h2>No Items Found</h2>"
+    : items.map((item, index) => `
+       <div id="items">
+        <img src="${item.imageUrl}" alt="${item.brand} ${item.name}">
+        <hr />
+        <h3 style="color: #4f46e5; font-weight: 600;">${item.name}</h3>
+        <p>Brand: ${item.brand}</p>
+        <p style="color: red; font-weight: bold;">$${item.price}</p>
+        <button onclick="addToCart(${index})" class="btn">Add to Cart</button>
+      </div>
+    `).join('');
+}
 
+// Cart Logic
+let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
 
+function addToCart(index) {
+  const item = phones[index];
+  const existingItem = cartItems.find(cartItem => cartItem.id === item.id);
 
-// Local Storage Scene Part 3
-const btn = document.querySelector(`.btn2`)
+  if (existingItem) {
+    existingItem.quantity += 1;
+  } else {
+    cartItems.push({...item, quantity: 1});
+  }
 
-btn.addEventListener("click", checkout);
+  localStorage.setItem('cartItems', JSON.stringify(cartItems));
+  Swal.fire("Great!", "Item added to cart successfully!", "success");
+}
 
-function checkout() {
-  localStorage.setItem(`cartItems`, JSON.stringify(cartItems))
-  window.location.href = `cart.html`;
-} 
+// Checkout
+document.getElementById('carticon').addEventListener("click", () => {
+  window.location.href = 'cart.html';
+});
+
+// Initialize cart
+window.addEventListener('DOMContentLoaded', () => {
+  cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+});
