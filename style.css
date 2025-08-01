@@ -1,4 +1,4 @@
-body.main {
+body{
   background-color: #0f172a;
   color: #e2e8f0;
   font-family: sans-serif;
@@ -6,6 +6,22 @@ body.main {
   padding: 0;
 }
 
+  #navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+
+  #image-slider {
+    margin-top: 20px; /* Creates space between navbar and slider */
+  }
+
+  .carousel-inner img {
+    height: 400px;
+    object-fit: cover;
+  }
+
+  
 #main2 {
   display: flex;
   justify-content: center;
